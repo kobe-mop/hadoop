@@ -1,0 +1,65 @@
+1.下载如下软件包
+    CentOS7, 
+    Hadoop2.7.3,
+    JDK1.8.0  （Linux rpm文件）
+    Vmware16,
+    XShell,
+    FileZille,
+
+2 安装3个虚拟机并实现ssh免密码登录
+  2.1安装3个机器虚拟机master,（slave1,slave2可以由master克隆而来）
+     
+     注意点：一个是software selection(选择infrastructure server)，一个是network &host name默认是选中Minimal Install，
+     这个安装之后很多东西要自己手动安装和配置，麻烦，建议不选这个，如果你喜欢桌面，你还可以选择 GNOME  Desktop我这里不要桌面，我选的是Server。
+     
+     设置ROOT用户的密码。
+     
+     安装完成后，重启，使用账户密码登录，然后用ifconfig命令查看IP配置。
+     
+     Xshell进行远程连接。
+     
+     说明：如果在安装时候选择的是Minimal  Install或者是没有选择Network & host name进行相关配置，ssh服务是没有安装的，
+     也就没法使用远程工具进行连接。此时你需要用root账户登录，或者使用普通账户登录后用sudo命令获得管理员权限，安装ssh服务。
+     
+     查看ssh服务状态的命令：
+     service  sshd  status
+     
+   2.2检查机器名称
+     hostname #查看
+     hostnamectl set-hostname master #永久修改hostname为master
+   
+   2.3 修改/etc/hosts文件, #3台机器同时进行
+       vi /etc/hosts
+       #修改为
+       192.168.234.132   master  
+       192.168.234.131   slave1  
+       192.168.234.130   slave2 
+       
+       用Xshell远程登录三台虚拟机，互相ping命令检查这3个机器是否相互ping得通。
+    
+    2.4给3个机器生成秘钥文件, #3台机器同时进行
+      ssh-keygen  -t   rsa   -P  ''  
+      ls    /root/.ssh/
+    
+    2.5在3台机器上创建authorized_keys文件
+      cat id_rsa.pub   #分别查看master，slave1, slave2的公钥
+      vi /root/.ssh/authorized_keys   #三台机器的公钥合在一起写进authorized_keys中，3台机器同时进行，此时三台机器都有了authorized_keys文件了
+    
+    2.6测试使用ssh进行无密码登录
+      ssh master
+      ssh slave1
+      ssh slave2   #首次会需要输入密码
+ 
+3 安装jdk和hadoop
+  3.1 安装JDK
+      
+      把rpm压缩包放在/usr/local/目录下。    #/usr/local/相当于Windows的C：/progarm files/
+      
+      rpm -ivh jdk-8u91-linux-x64.rpm    #解压缩
+      
+      
+      
+      
+      
+      
+      
